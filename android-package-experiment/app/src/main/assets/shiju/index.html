@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f0e7">
+  <title>拾句 · 高中词汇</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="返回全部词汇">
+        <span class="brand-mark">拾</span>
+        <span><b>拾句</b><small>在语境里记住单词</small></span>
+      </a>
+      <nav class="tabs" aria-label="学习模式">
+        <label class="book-select"><span>词书</span><select id="bookSelect"><option value="cet6">六级 · 乱序</option><option value="high-school" selected>高中 · 乱序</option><option value="postgraduate">考研 · 乱序</option><option value="junior-high">初中 · 乱序</option><option value="mistake-review">错题本 · 当前词书随机</option><option value="history-review">历史错题 · 第二轮随机</option></select></label>
+        <div class="format-switch" aria-label="内容形式">
+          <button class="format" data-format="phrase">简单词组</button>
+          <button class="format active" data-format="sentence">完整例句</button>
+        </div>
+        <button class="tab active" data-mode="all">今日学习</button>
+        <button class="tab" data-mode="mistakes">错题本 <span id="mistakeCount">0</span></button>
+        <button id="dictionarySearchBtn" class="dictionary-search-trigger" type="button">⌕ 查词</button>
+        <div class="account"><span id="usernameLabel"></span><button id="dataSyncBtn" type="button">数据同步</button><button id="guideBtn" type="button">使用手册</button><button id="logoutBtn">退出</button></div>
+      </nav>
+    </header>
+
+    <section class="workspace">
+      <aside class="rail" aria-label="学习进度">
+        <div class="rail-title"><span>累计进度</span><b id="progressLabel">0 / 0</b></div>
+        <div class="progress-track"><span id="progressBar"></span></div>
+        <div class="stats">
+          <div><strong id="todayStudied">0</strong><span>今日学习</span></div>
+          <div><strong id="todayMistakes">0</strong><span>今日错题</span></div>
+          <div><strong id="learnedCount">0</strong><span>累计已学</span></div>
+        </div>
+        <button id="mobileToolsToggle" class="mobile-tools-toggle" type="button" aria-expanded="false">目标、记录与提示 <span>⌄</span></button>
+        <section class="goal-panel">
+          <div><span>每日目标</span><b id="goalText">0 / 20</b></div>
+          <div class="goal-track"><i id="goalBar"></i></div>
+          <form id="goalForm"><input id="goalInput" type="number" min="1" max="1000" value="20" aria-label="每日学习目标"><button>设置</button></form>
+          <button id="historyBtn" class="text-button">查看学习记录</button>
+          <div id="historyList" class="history-list hidden"></div>
+        </section>
+        <div class="rail-note">
+          <span>学习提示</span>
+          <p>别只记高亮词：尽量弄清句中每个单词的词性和含义。高亮词也许很简单，但句子里可能藏着你还没见过的词；答案展开后，可以点击词书中已有的其他单词继续查看。</p>
+        </div>
+      </aside>
+
+      <section class="study" aria-live="polite">
+        <div id="loading" class="loading">正在翻开词书…</div>
+        <article id="card" class="card hidden">
+          <div id="mobileDailyProgress" class="mobile-daily-progress" aria-label="今日学习进度">
+            <span>今日进度 <b id="mobileGoalText">0 / 20</b></span>
+            <div><i id="mobileGoalBar"></i></div>
+            <button id="mobileExitStudyBtn" type="button" aria-label="退出专注模式，返回完整首页"><span aria-hidden="true">←</span> 退出专注</button>
+            <button id="mobilePreviousBtn" class="mobile-previous-btn hidden" type="button">← 上一题（显示答案）</button>
+          </div>
+          <div class="eyebrow"><button id="backToMistakesBtn" class="back-link hidden">← 返回错题列表</button><button id="previousBtn" class="back-link hidden">← 上一题</button><span id="positionText">WORD 001</span><i></i><button id="shuffleBtn" title="换一组顺序">随机顺序</button></div>
+          <div class="context" id="contextSentence"></div>
+          <div class="speech-tools" role="group" aria-label="离线英语朗读">
+            <button id="speakWordBtn" type="button"><span aria-hidden="true">🔊</span> 朗读单词</button>
+            <button id="speakContextBtn" type="button"><span aria-hidden="true">▶</span> <b id="speakContextLabel">朗读词组</b></button>
+            <button id="stopSpeechBtn" type="button"><span aria-hidden="true">■</span> 停止</button>
+            <small id="speechStatus" aria-live="polite"></small>
+          </div>
+          <p class="instruction">请写下高亮单词的中文含义；也留意句中其他单词的词性和含义，输入 2 可直接加入错题本</p>
+
+          <div id="previousMistakeAnswer" class="previous-mistake-answer hidden">
+            <span>上次加入错题本时的输入</span>
+            <p id="previousMistakeAnswerText"></p>
+          </div>
+
+          <form id="answerForm" autocomplete="off">
+            <label for="answerInput">你的答案</label>
+            <div class="answer-row">
+              <input id="answerInput" type="text" placeholder="输入你理解的含义…" maxlength="120" required>
+              <button type="submit" class="primary">确认答案 <span>↵</span></button>
+            </div>
+          </form>
+
+          <section id="reveal" class="reveal hidden">
+            <button id="returnToStudyBtn" class="return-to-study hidden" type="button">→ 回到背诵</button>
+            <div class="answer-details-scroll">
+              <div class="answer-comparison">
+                <div><span>你的答案</span><p id="userAnswer"></p></div>
+                <div class="correct"><span>词书释义</span><p id="correctAnswer"></p></div>
+              </div>
+              <div class="sentence-translation">
+                <span>整句中文</span>
+                <p id="sentenceTranslation"></p>
+              </div>
+              <div class="answer-tools"><button id="answerDictionarySearchBtn" type="button">⌕ 查词</button></div>
+              <div id="targetDictionary" class="dictionary-supplement">
+                <div><span>内置词典补充 · ECDICT</span><b id="targetDictionaryPhonetic"></b></div>
+                <small id="targetDictionaryPos"></small>
+                <p id="targetDictionaryTranslation"></p>
+              </div>
+              <div class="sentence-translation context-source">
+                <span id="contextMetaLabel">内容来源</span>
+                <p id="exampleSource"></p>
+              </div>
+              <p class="self-check">回想得怎么样？请诚实地为这次记忆做标记。</p>
+            </div>
+            <div class="actions">
+              <button id="rememberBtn" class="secondary"><span>✓</span> 我记住了</button>
+              <button id="mistakeBtn" class="danger"><span>＋</span> 加入错题本</button>
+            </div>
+          </section>
+        </article>
+
+        <section id="mistakeList" class="mistake-list hidden">
+          <div class="list-heading">
+            <div><span>MISTAKE BOOK</span><h2>错题本</h2><p>点击单词进入背诵；释义会在提交答案后显示。</p></div>
+            <div class="list-tools"><button id="mistakePreviousBtn" class="back-link hidden">← 回到上一题</button><strong id="listCount">0 个词</strong></div>
+          </div>
+          <div id="mistakeItems" class="mistake-items"></div>
+        </section>
+
+        <section id="emptyState" class="empty hidden">
+          <span>✓</span>
+          <h2>这里已经复习完了</h2>
+          <p id="emptyMessage">今天的单词已完成，休息一下吧。</p>
+          <button id="emptyPreviousBtn" class="secondary hidden">← 回到上一题</button>
+          <button id="restartBtn" class="primary">重新开始</button>
+        </section>
+      </section>
+    </section>
+  </main>
+  <section id="authOverlay" class="auth-overlay hidden" aria-modal="true" role="dialog">
+    <div class="auth-card">
+      <span class="auth-mark">拾</span>
+      <h1>欢迎来到拾句</h1>
+      <p>登录后，每位用户的学习进度、每日统计和错题本都会分别保存在本机。</p>
+      <div class="auth-switch"><button id="loginModeBtn" class="active" type="button">登录</button><button id="registerModeBtn" type="button">注册</button></div>
+      <form id="authForm" autocomplete="on">
+        <label for="authUsername">用户名</label><input id="authUsername" name="username" maxlength="24" autocomplete="username" required>
+        <label for="authPassword">密码</label><input id="authPassword" name="password" type="password" minlength="6" maxlength="128" autocomplete="current-password" required>
+        <p id="authError" class="auth-error"></p>
+        <button id="authSubmit" class="primary" type="submit">登录</button>
+      </form>
+    </div>
+  </section>
+  <section id="guideOverlay" class="guide-overlay hidden" aria-modal="true" role="dialog" aria-labelledby="guideTitle">
+    <article class="guide-card">
+      <button id="closeGuideBtn" class="popup-close" type="button" aria-label="关闭使用手册">×</button>
+      <header class="guide-heading">
+        <span>QUICK START · 使用手册</span>
+        <h1 id="guideTitle">先猜，再看答案</h1>
+        <p>拾句希望你借助词组和例句主动回忆、推测词义，而不是一开始就看翻译。猜错并不可怕，真正费力的回忆更容易留下记忆。</p>
+      </header>
+      <div class="guide-grid">
+        <section class="guide-section guide-main">
+          <span>01 · 最快学习方式</span>
+          <ol>
+            <li>先读词组或例句，根据上下文猜高亮单词的含义。</li>
+            <li>有印象就输入自己的答案；<strong>实在不记得，直接输入 <kbd>2</kbd></strong>，程序会展开解析并加入错题本。</li>
+            <li>答案展开后，核对词书释义、词典补充和整句翻译，再决定是否保留为错题。</li>
+          </ol>
+        </section>
+        <section class="guide-section">
+          <span>02 · 快捷键</span>
+          <div class="guide-shortcut"><kbd>2</kbd><p><b>答题框内</b>：直接加入错题本并展开答案。</p></div>
+          <div class="guide-shortcut"><kbd>1</kbd><p><b>答案展开后</b>：进入下一题；若刚才用2标记，不会误删错题。</p></div>
+          <div class="guide-shortcut"><kbd>2</kbd><p><b>答案展开后</b>：加入或继续保留在错题本，再进入下一题。</p></div>
+          <div class="guide-shortcut"><kbd>查词</kbd><p><b>答案展开后</b>：点击解析区中的“查词”，无需退出专注模式。</p></div>
+        </section>
+        <section class="guide-section">
+          <span>03 · 句中查词</span>
+          <p>目标词可能很简单，但例句里也许藏着你没见过的词。提交答案后，点击句中单词即可查阅。</p>
+          <p><u>带下划线的单词</u>属于当前词书，可查看词书释义、词典补充和例句；没有下划线的词需确认后查询，只显示词典含义。</p>
+          <p>也可以点击顶部“查词”，输入英文或中文反查。比如输入“偷”可找到 <b>steal</b>，输入“小偷”可找到 <b>thief</b>；程序会提示 <b>steel / steal</b> 等易混词。</p>
+        </section>
+        <section class="guide-section">
+          <span>04 · 为什么词书外单词不能加入错题本</span>
+          <p>词书外词汇数量太多，且相较于当前学习目标优先级较低。为避免错题本失去重点，它们只供临时查询，不支持加入错题本。</p>
+        </section>
+        <section class="guide-section">
+          <span>05 · 离线朗读</span>
+          <p>点击“朗读单词”可用较慢速度听目标词发音，点击“朗读词组/例句”可听完整语境。程序优先选择手机中质量最高的离线英语 voice，不上传学习内容；若系统尚未安装高质量英语语音包，需要先在系统语音设置中安装一次。</p>
+        </section>
+        <section class="guide-section">
+          <span>06 · 复习与进度</span>
+          <p>错词会继续参与学习循环；每次复习都会累计温习次数，完成第 3 次后才能从“错题本”移除。“历史错题”永久记录曾经出错的词，适合第二轮随机复习。</p>
+          <p>加入或继续保留错题时会记录本次输入；之后练习该错词时，会显示最近一次被标错时的输入，帮助你辨认此前的误解。</p>
+          <p>手机端只有亲自点击输入框才会进入专注学习视图；之后例句和今日目标进度固定在上方，下一题会自动打开键盘。换词书、切换词组/例句或打开手册不会触发专注模式；需要返回设置时，点击顶部“退出专注”。</p>
+        </section>
+        <section class="guide-section guide-account-note">
+          <span>07 · 本地账户说明</span>
+          <p><strong>本程序未连接云端。</strong>账户只用于在同一设备上区分不同学习者，建议使用容易记住的简单用户名和密码，不要使用重要网站的真实密码。卸载程序会清除本机数据；覆盖更新则会保留数据。</p>
+        </section>
+      </div>
+      <footer class="guide-footer">
+        <p>之后可随时点击顶部“使用手册”再次查看。</p>
+        <button id="startLearningBtn" class="primary" type="button">明白了，开始学习</button>
+      </footer>
+    </article>
+  </section>
+
+  <section id="dataSyncOverlay" class="confirm-overlay hidden" aria-modal="true" role="dialog" aria-labelledby="dataSyncTitle">
+    <article class="confirm-card data-sync-card"><span>BACKUP · 数据同步</span><h2 id="dataSyncTitle">导出或导入学习数据</h2><p>备份包含四本词书的学习进度、错题本和温习次数，不包含密码。新版 v2 会同步新增与删除状态，并合并两端温习记录；旧版 v1 可兼容导入，但无法传播旧删除操作。</p><div class="data-sync-actions"><button id="exportBackupBtn" class="primary" type="button">导出 JSON 备份</button><label class="backup-file-button" for="backupFileInput">选择 JSON 并导入</label><input id="backupFileInput" class="visually-hidden" type="file" accept=".json,application/json"></div><p id="dataSyncStatus" class="data-sync-status" role="status"></p><button id="closeDataSyncBtn" class="secondary" type="button">关闭</button></article>
+  </section>
+  <section id="dictionarySearchOverlay" class="word-popup hidden" aria-modal="true" role="dialog" aria-labelledby="dictionarySearchTitle">
+    <article class="word-popup-card dictionary-search-card">
+      <button id="closeDictionarySearch" class="popup-close" type="button" aria-label="关闭查词窗口">×</button>
+      <span>ENGLISH ↔ 中文</span><h2 id="dictionarySearchTitle">词典查询</h2>
+      <form id="dictionarySearchForm" class="dictionary-search-form"><input id="dictionarySearchInput" type="search" maxlength="50" placeholder="输入英文或中文含义，如 steal、偷、小偷" autocomplete="off"><button class="primary" type="submit">查询</button></form>
+      <p id="dictionarySearchHint" class="dictionary-search-hint">支持英文查释义和中文反查英文；查询不会加入错题本。</p>
+      <div id="dictionarySearchResults" class="dictionary-search-results"></div>
+    </article>
+  </section>
+  <section id="wordPopup" class="word-popup hidden" aria-modal="true" role="dialog" aria-labelledby="popupWord">
+    <article class="word-popup-card">
+      <button id="closeWordPopup" class="popup-close" type="button" aria-label="关闭词汇窗口">×</button>
+      <span id="popupModeLabel">WORD LOOKUP</span>
+      <h2 id="popupWord"></h2>
+      <div id="popupBookSection" class="popup-example"><small>词书释义</small><p id="popupMeaning" class="popup-meaning"></p></div>
+      <div id="popupDictionarySection" class="popup-dictionary">
+        <div><small>内置词典 · ECDICT</small><b id="popupDictionaryPhonetic"></b></div>
+        <span id="popupDictionaryPos"></span>
+        <p id="popupDictionaryTranslation"></p>
+      </div>
+      <div id="popupBookExamples"><div class="popup-example"><small>例句</small><p id="popupExample"></p></div><div class="popup-example"><small>中文</small><p id="popupTranslation"></p></div></div>
+    </article>
+  </section>
+  <footer><span id="footerBook">高中 · 乱序词书</span><span>进度自动保存在本机</span></footer>
+  <script src="app.js"></script>
+  <script src="dictionary-search.js"></script>
+</body>
+</html>

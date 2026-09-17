@@ -1,4 +1,4 @@
-assets/
+/assets/
 __pycache__/
 *.apk
 *.exe
@@ -6,3 +6,16 @@ __pycache__/
 *.keystore
 *.pfx
 .env*
+.gradle/
+.idea/
+local.properties
+**/build/
+**/dist/
+**/output/
+**/.tools/
+*.pyc
+*.iml
+users.json
+sessions.json
+progress.json
+**/offline-tools/wheels/

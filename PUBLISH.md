@@ -1,6 +1,6 @@
 # 发布操作说明
 
-建议仓库：`Protritium/Shiju`。此目录是发布仓库，不是原 Eng 开发目录的替代品。仓库名称变更时同步修改两份 README 链接。
+建议仓库：`Protritium/Shiju`。此目录包含公开源码快照和发布文档，不替代原 Eng 开发目录。两端源码及构建说明见 SOURCE.md。仓库名称变更时同步修改两份 README 链接。
 
 1. 在 GitHub 创建公开空仓库 Shiju，不要勾选自动添加 README。
 2. 在此目录完成 GitHub CLI 登录：`gh auth login`。不要将令牌写入仓库。

@@ -51,4 +51,4 @@ Open 数据同步 (Data synchronization), export a JSON backup, transfer it to t
 
 Use [Issues](https://github.com/Protritium/Shiju/issues) to report your platform, version, reproduction steps and screenshots. Do not share passwords, private account files or signing keys.
 
-This is a distribution repository for existing user-supplied installers. It does not rebuild or alter those binaries or include private learning data, corpora and model files from the original Eng project. See [release notes](RELEASE_NOTES.md) for hashes and [publishing instructions](PUBLISH.md) for maintainers.
+This repository includes both platform sources: `windows-package-experiment` and `android-package-experiment`, alongside documentation for existing user-supplied installers. See [source/build notes](SOURCE.md). The source is the current local snapshot; exact reproducibility of the supplied binaries has not been established. Private learning data, signing keys, corpora and model files are excluded. See [release notes](RELEASE_NOTES.md) for hashes and [publishing instructions](PUBLISH.md) for maintainers.

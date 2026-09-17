@@ -69,6 +69,6 @@
 
 ## 发布说明
 
-本仓库用于分发用户提供的既有 Android / Windows 安装包和使用手册；原开发项目位于 `Eng`，本次未重编译或修改安装包。公开下载文件名保持稳定，实际版本及 SHA-256 见 [发布记录](RELEASE_NOTES.md)。源项目中的学习数据、语料、翻译模型、签名密钥不在此发布目录中。
+本仓库公开 Windows 与 Android 源码，并分发用户提供的既有安装包。Windows 工程位于 `windows-package-experiment`，Android 工程位于 `android-package-experiment`。运行与构建步骤、源码和安装包的对应关系见 [源码说明](SOURCE.md)。本次未重编译或修改安装包，实际版本及 SHA-256 见 [发布记录](RELEASE_NOTES.md)。用户学习记录、语料、翻译模型和签名密钥不包含在仓库中。
 
 准备与上传步骤见 [发布操作说明](PUBLISH.md)。首次发布前，下载链接尚不可用。

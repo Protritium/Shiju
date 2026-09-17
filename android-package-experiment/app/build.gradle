@@ -1,0 +1,56 @@
+plugins {
+    id "com.android.application"
+    id "com.chaquo.python"
+}
+
+def githubRunNumber = (System.getenv("GITHUB_RUN_NUMBER") ?: "0").toInteger()
+def releaseKeystorePath = System.getenv("SHIJU_KEYSTORE_FILE")
+
+android {
+    namespace "com.shiju.vocabulary"
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.shiju.vocabulary"
+        minSdk 24
+        targetSdk 35
+        // GitHub's workflow run number always increases, allowing Android to
+        // install a newly signed APK directly over an older release.
+        versionCode githubRunNumber > 0 ? 10000 + githubRunNumber : 22
+        versionName githubRunNumber > 0 ? "1.9.${githubRunNumber}" : "1.9.0"
+
+        ndk {
+            abiFilters "arm64-v8a"
+        }
+    }
+
+    signingConfigs {
+        release {
+            if (releaseKeystorePath) {
+                storeFile file(releaseKeystorePath)
+                storePassword System.getenv("SHIJU_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("SHIJU_KEY_ALIAS")
+                keyPassword System.getenv("SHIJU_KEY_PASSWORD")
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+chaquopy {
+    defaultConfig {
+        version = "3.12"
+    }
+}

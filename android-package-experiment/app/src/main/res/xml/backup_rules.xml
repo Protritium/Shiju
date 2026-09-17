@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Accounts, progress, mistakes, goals and persistent sessions. -->
+    <include domain="file" path="userdata/" />
+</full-backup-content>
