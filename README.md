@@ -2,7 +2,7 @@
 
 ## 下载程序
 
-**[⬇ Windows 电脑版](https://github.com/Protritium/Shiju/releases/latest/download/Shiju-Windows-Setup.exe)** · **[⬇ Android 安卓版](https://github.com/Protritium/Shiju/releases/latest/download/Shiju-Android.apk)**
+**[⬇ Windows 电脑版](https://github.com/Protritium/Shiju/releases/download/win/Shiju-Setup-1.9.0.exe)** · **[⬇ Android 安卓版](https://github.com/Protritium/Shiju/releases/download/android/app-release.apk)**
 
 [所有版本 / 备用入口](https://github.com/Protritium/Shiju/releases) · **简体中文** · [English](README.en.md)
 
