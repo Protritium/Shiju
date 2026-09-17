@@ -1,0 +1,25 @@
+name: 问题反馈 / Bug report
+description: 报告 Windows 或 Android 使用问题
+body:
+  - type: dropdown
+    id: platform
+    attributes:
+      label: 平台 / Platform
+      options:
+        - Windows
+        - Android
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 程序版本及系统版本 / App and OS versions
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 问题、复现步骤与截图 / Problem, steps and screenshots
+      description: 不要上传密码、完整账户数据或签名密钥。
+    validations:
+      required: true

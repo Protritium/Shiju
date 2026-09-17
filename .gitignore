@@ -1,0 +1,8 @@
+assets/
+__pycache__/
+*.apk
+*.exe
+*.jks
+*.keystore
+*.pfx
+.env*
